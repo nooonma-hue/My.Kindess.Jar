@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kindness Jar · مرطبان اللطف</title>
+<style>
+:root{--bg1:#cfeeff;--bg2:#fff3c4;--ink:#5a2a47;--card:#ffffffd9;--accent:#ff4f86;--glass:#ffffffa0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2a2058;--bg2:#4a2250;--ink:#ffe3ef;--card:#ffffff26;--glass:#ffffff30}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Comic Sans MS","Comic Neue","Chalkboard SE",Tahoma,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg1),var(--bg2));overflow-x:hidden}
+.bgfx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bgfx::after{content:"";position:absolute;left:-10%;right:-10%;bottom:-18vh;height:32vh;background:radial-gradient(ellipse at 50% 0,#8fdc8a,#5cc46a 70%);border-radius:50%;opacity:.85}
+.bgfx span{position:absolute;font-size:clamp(28px,6vw,56px);animation:fl 5s ease-in-out infinite}
+.bgfx .c{animation:dr 40s linear infinite;font-size:clamp(46px,9vw,90px);opacity:.9}
+@keyframes fl{50%{transform:translateY(-18px) rotate(8deg)}}
+@keyframes dr{from{transform:translateX(-20vw)}to{transform:translateX(120vw)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.bgfx span{animation:none}}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:12px;display:flex;flex-direction:column;align-items:center}
+h1{margin:2px 0 0;font-size:clamp(26px,5vw,44px);text-align:center;line-height:1.2}
+h1 small{display:block;font-size:.8em;color:var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.tabs button.act{background:var(--accent);color:#fff}
+.stage{position:relative;width:min(88vw,330px);margin-top:4px}
+#jar{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px #0002)}
+#jar.over{transform:scale(1.04);transition:transform .15s}
+.bubble{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%) scale(.6);background:var(--card);border:3px solid var(--accent);border-radius:20px;padding:6px 14px;text-align:center;font-size:clamp(16px,3vw,22px);opacity:0;transition:.25s;pointer-events:none;width:max-content;max-width:90vw;z-index:5}
+.bubble.show{opacity:1;transform:translate(-50%,-100%) scale(1)}
+.bubble b{display:block;color:var(--accent)}
+.count{font-size:clamp(24px,5vw,36px);font-weight:bold;margin:6px 0 2px;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:18px;padding:2px 16px}
+.count input{width:90px;font:inherit;font-size:inherit;font-weight:bold;text-align:center;color:var(--accent);border:2px dashed var(--accent);border-radius:12px;background:transparent}
+.hint{font-size:14px;margin:2px 0}
+.bar{width:min(90vw,420px);height:20px;background:var(--glass);border-radius:12px;overflow:hidden;border:2px solid var(--accent)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff9bbd,var(--accent));transition:width .4s}
+.tray{margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--card);border-radius:24px;padding:8px 22px}
+.tray p{margin:0;font-size:clamp(15px,2.6vw,20px);text-align:center}
+.src{width:76px;height:70px;touch-action:none;cursor:grab;animation:beat 1.4s infinite}
+.src svg{width:100%;height:100%;fill:#ff4f86;filter:drop-shadow(0 3px 3px #0003)}
+@keyframes beat{50%{transform:scale(1.1)}}
+.fly{position:fixed;width:70px;height:64px;pointer-events:none;z-index:50;fill:#ff4f86;transform:translate(-50%,-50%)}
+.btns{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;justify-content:center}
+button{font:inherit;font-size:16px;border:2px solid var(--accent);background:var(--card);color:var(--ink);border-radius:14px;padding:6px 12px;cursor:pointer}
+button.main{background:var(--accent);color:#fff}
+#sv{font-size:14px;background:var(--card);border-radius:12px;padding:2px 10px;opacity:.6;transition:.3s}
+#sv.on{opacity:1;color:#1a9a4a}
+.heart-in{transform-box:fill-box;transform-origin:center}
+.heart-in.new{animation:drop .7s cubic-bezier(.3,1.4,.5,1)}
+@keyframes drop{from{transform:translateY(-230px) scale(.4);opacity:0}to{transform:none;opacity:1}}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal.on{display:flex}
+.box{background:var(--bg1);border:5px solid var(--accent);border-radius:28px;padding:18px 22px;max-width:520px;width:100%;text-align:center}
+.box h2{margin:0 0 6px;font-size:clamp(24px,6vw,38px)}
+.box .rw{font-size:clamp(22px,4.5vw,32px);margin:8px 0}
+.box label{display:block;text-align:start;margin:8px 0 2px;font-size:15px}
+.box input.t{width:100%;font:inherit;font-size:17px;padding:6px 10px;border-radius:10px;border:2px solid var(--accent);background:var(--card);color:var(--ink)}
+.conf{position:fixed;top:-40px;font-size:30px;pointer-events:none;z-index:70;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="h" viewBox="0 0 32 30"><path d="M16 28C16 28 2 18 2 9.5 2 5 5.5 2 9.5 2c3 0 5.5 1.8 6.5 4.2C17 3.8 19.5 2 22.5 2 26.5 2 30 5 30 9.5 30 18 16 28 16 28z"/></symbol></svg>
+<div class="bgfx">
+  <span style="right:4%;top:3%;animation:spin 30s linear infinite">☀️</span>
+  <span class="c" style="top:8%">☁️</span><span class="c" style="top:22%;animation-delay:-18s;animation-duration:55s">☁️</span>
+  <span style="left:3%;top:30%">🌈</span><span style="right:6%;top:42%;animation-delay:-2s">🦋</span>
+  <span style="left:8%;top:58%;animation-delay:-1s">⭐</span><span style="right:10%;top:66%;animation-delay:-3s">😊</span>
+  <span style="left:5%;bottom:10%;animation-delay:-2s">🌸</span><span style="right:5%;bottom:8%;animation-delay:-4s">🌻</span><span style="left:42%;bottom:3%;animation-delay:-1s">🐝</span>
+</div>
+<div class="wrap">
+  <h1>Our Kindness Jar<small dir="rtl">مرطبان اللطف في صفّنا</small></h1>
+  <div class="tabs" id="tabs"></div>
+  <div class="stage">
+    <div class="bubble" id="bub"></div>
+    <svg id="jar" viewBox="0 0 300 400">
+      <rect x="75" y="18" width="150" height="32" rx="10" fill="#ff4f86"/>
+      <rect x="85" y="50" width="130" height="40" fill="var(--glass)" stroke="#ff4f86" stroke-width="4"/>
+      <path d="M60 90H240Q260 100 260 130V350Q260 385 225 385H75Q40 385 40 350V130Q40 100 60 90Z" fill="var(--glass)" stroke="#ff4f86" stroke-width="5"/>
+      <path d="M58 120V340" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".6"/>
+      <g id="hearts"></g>
+    </svg>
+  </div>
+  <div class="count"><span id="n">0</span> / <input id="g" type="number" min="1" max="200" inputmode="numeric"> ❤️</div>
+  <div class="hint">✏️ Tap the goal to change it · اضغط على الهدف لتغييره</div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="tray">
+    <div class="src" id="src"><svg><use href="#h"/></svg></div>
+    <p>Drag a heart into the jar!</p>
+    <p dir="rtl">اسحب القلب إلى المرطبان!</p>
+  </div>
+  <div class="btns">
+    <button id="mute">🔊</button>
+    <button id="undo">↩️ Undo · تراجع</button>
+    <button id="set">⚙️ Class settings · الإعدادات</button>
+  </div>
+  <div id="sv">✓ Saved automatically · يُحفظ تلقائياً</div>
+</div>
+
+<div class="modal" id="win"><div class="box">
+  <h2>🎉 The jar is full! 🎉<br><span dir="rtl">المرطبان ممتلئ!</span></h2>
+  <div class="rw" id="rwEn"></div>
+  <div class="rw" id="rwAr" dir="rtl"></div>
+  <div class="btns"><button class="main" id="again">New jar · مرطبان جديد</button><button id="close">OK · حسناً</button></div>
+</div></div>
+
+<div class="modal" id="cfg"><div class="box">
+  <h2>⚙️ Settings · الإعدادات</h2>
+  <label>Class name · اسم الصف</label><input class="t" id="eName">
+  <label>Reward (English)</label><input class="t" id="eEn">
+  <label dir="rtl">المكافأة (بالعربية)</label><input class="t" id="eAr" dir="rtl">
+  <div class="btns"><button class="main" id="save">Save · حفظ</button><button id="reset">Empty jar · تفريغ</button><button id="del">Delete class · حذف</button></div>
+</div></div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function mk(name){return{name:name,n:0,goal:20,en:"Extra play time!",ar:"وقت لعب إضافي!",seed:Math.floor(Math.random()*1e9)}}
+var S={cls:[mk("Class 1"),mk("Class 2")],cur:0,mute:false};
+try{var o=JSON.parse(localStorage.getItem("kjar2")||"null");if(o&&o.cls&&o.cls.length)S=o;else{var p=JSON.parse(localStorage.getItem("kjar")||"null");if(p){var c=S.cls[0];c.n=p.n||0;c.goal=p.goal||20;c.en=p.en||c.en;c.ar=p.ar||c.ar;S.mute=!!p.mute}}}catch(e){}
+function C(){return S.cls[S.cur]}
+var st;
+function save(){try{localStorage.setItem("kjar2",JSON.stringify(S))}catch(e){}var s=$("sv");s.classList.add("on");clearTimeout(st);st=setTimeout(function(){s.classList.remove("on")},1500)}
+var COL=["#ff4f86","#ff7aa2","#ff9f1c","#c77dff","#ff5d5d","#ffb703","#4cc9f0"];
+var PH=[["Thank you!","شكراً لك!"],["Can I help you?","هل أستطيع مساعدتك؟"],["You are my friend","أنت صديقي"],["Great job!","أحسنت!"],["Please, you first","تفضّل أنت أولاً"],["I’m sorry","أنا آسف"],["Let’s share!","لنتشارك!"],["I like your work","أعجبني عملك"],["You are kind","أنت لطيف"]];
+var ac=null;
+function ctx(){if(!ac){try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==="suspended")ac.resume();return ac}
+function tone(f,t,d,type,v){var a=ctx();if(!a||S.mute)return;var o=a.createOscillator(),g=a.createGain();o.type=type||"sine";o.frequency.value=f;var s=a.currentTime+t;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(v||.25,s+.02);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(a.destination);o.start(s);o.stop(s+d+.05)}
+var SC=[523,587,659,784,880,1047,1175,1319];
+function dropSound(){var f=SC[C().n%8];tone(f/2,0,.12,"triangle",.3);tone(f,.1,.5,"sine",.25);tone(f*2,.16,.4,"sine",.12)}
+function winSound(){[523,659,784,1047,784,1047,1319].forEach(function(f,i){tone(f,i*.16,.5,"triangle",.28)});tone(1568,1.2,1,"sine",.2)}
+function rnd(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function tabs(){var t=$("tabs");t.innerHTML="";S.cls.forEach(function(c,i){var b=document.createElement("button");b.textContent=c.name;if(i===S.cur)b.className="act";b.onclick=function(){S.cur=i;save();draw();tabs()};t.appendChild(b)});var a=document.createElement("button");a.textContent="＋";a.title="Add class · إضافة صف";a.onclick=function(){S.cls.push(mk("Class "+(S.cls.length+1)));S.cur=S.cls.length-1;save();tabs();draw()};t.appendChild(a)}
+function draw(newest){
+  var c=C(),g=$("hearts");g.innerHTML="";
+  var cols=Math.max(3,Math.round(Math.sqrt(c.goal*180/255))),rows=Math.ceil(c.goal/cols),cw=180/cols,ch=255/rows,sz=Math.min(cw,ch)*1.12,perms={};
+  for(var i=0;i<c.n;i++){
+    var r=Math.floor(i/cols),j=i%cols;
+    if(!perms[r]){var rr=rnd(c.seed+r*101),a=[];for(var k=0;k<cols;k++)a.push(k);for(k=cols-1;k>0;k--){var m=Math.floor(rr()*(k+1)),tmp=a[k];a[k]=a[m];a[m]=tmp}perms[r]=a}
+    var q=rnd(c.seed+i*7919),col=perms[r][j];
+    var x=60+col*cw+(cw-sz)/2+(q()-.5)*cw*.5,y=115+255-(r+1)*ch+(ch-sz)/2+(q()-.5)*ch*.3,rot=(q()-.5)*55,color=COL[Math.floor(q()*COL.length)];
+    var gg=document.createElementNS("http://www.w3.org/2000/svg","g");gg.setAttribute("transform","rotate("+rot+" "+(x+sz/2)+" "+(y+sz/2)+")");
+    var u=document.createElementNS("http://www.w3.org/2000/svg","use");
+    u.setAttribute("href","#h");u.setAttribute("x",x);u.setAttribute("y",y);u.setAttribute("width",sz);u.setAttribute("height",sz);u.setAttribute("fill",color);
+    u.setAttribute("class","heart-in"+(newest&&i===c.n-1?" new":""));gg.appendChild(u);g.appendChild(gg)}
+  $("n").textContent=c.n;$("g").value=c.goal;$("bar").style.width=Math.min(100,c.n/c.goal*100)+"%";
+}
+var bt;
+function say(){var p=PH[Math.floor(Math.random()*PH.length)],b=$("bub");b.innerHTML=p[0]+"<b dir=\"rtl\">"+p[1]+"</b>";b.classList.add("show");clearTimeout(bt);bt=setTimeout(function(){b.classList.remove("show")},3000)}
+function confetti(){var E=["❤️","⭐","💖","🎉","✨","💛"];for(var i=0;i<60;i++){var s=document.createElement("span");s.className="conf";s.textContent=E[i%E.length];s.style.left=Math.random()*100+"vw";s.style.animationDuration=(2+Math.random()*2.5)+"s";s.style.animationDelay=Math.random()*1.2+"s";document.body.appendChild(s);setTimeout(function(el){el.remove()},6000,s)}}
+function add(){
+  var c=C();if(c.n>=c.goal){showWin();return}c.n++;save();draw(true);dropSound();say();
+  if(c.n>=c.goal)setTimeout(showWin,900)
+}
+function showWin(){var c=C();winSound();confetti();$("rwEn").textContent=c.en;$("rwAr").textContent=c.ar;$("win").classList.add("on")}
+var drag=null,src=$("src");
+src.addEventListener("pointerdown",function(e){ctx();e.preventDefault();var f=document.createElement("div");f.className="fly";f.innerHTML="<svg width=\"70\" height=\"64\"><use href=\"#h\"/></svg>";f.firstChild.style.fill="#ff4f86";document.body.appendChild(f);drag={f:f,x:e.clientX,y:e.clientY,m:false};mv(e);src.setPointerCapture(e.pointerId)});
+function mv(e){if(!drag)return;drag.f.style.left=e.clientX+"px";drag.f.style.top=e.clientY+"px";if(Math.abs(e.clientX-drag.x)+Math.abs(e.clientY-drag.y)>10)drag.m=true;$("jar").classList.toggle("over",hit(e,$("jar").getBoundingClientRect()))}
+function hit(e,r){return e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom}
+src.addEventListener("pointermove",mv);
+src.addEventListener("pointerup",function(e){if(!drag)return;var ok=hit(e,$("jar").getBoundingClientRect())||!drag.m;drag.f.remove();drag=null;$("jar").classList.remove("over");if(ok)add()});
+src.addEventListener("pointercancel",function(){if(drag){drag.f.remove();drag=null}});
+$("g").onchange=function(){var c=C(),v=parseInt(this.value,10);if(!(v>=1))v=c.goal;c.goal=Math.min(200,v);if(c.n>c.goal)c.n=c.goal;save();draw()};
+$("undo").onclick=function(){var c=C();if(c.n>0){c.n--;save();draw();tone(300,0,.2,"sine",.2)}};
+function icon(){$("mute").textContent=S.mute?"🔇":"🔊"}
+$("mute").onclick=function(){S.mute=!S.mute;save();icon()};
+function empty(){var c=C();c.n=0;c.seed=Math.floor(Math.random()*1e9);save();draw()}
+$("again").onclick=function(){empty();$("win").classList.remove("on")};
+$("close").onclick=function(){$("win").classList.remove("on")};
+$("set").onclick=function(){var c=C();$("eName").value=c.name;$("eEn").value=c.en;$("eAr").value=c.ar;$("del").style.display=S.cls.length>1?"":"none";$("del").textContent="Delete class · حذف";$("cfg").classList.add("on")};
+$("save").onclick=function(){var c=C();c.name=$("eName").value||c.name;c.en=$("eEn").value;c.ar=$("eAr").value;save();tabs();$("cfg").classList.remove("on")};
+$("reset").onclick=function(){empty();$("cfg").classList.remove("on")};
+$("del").onclick=function(){if(this.textContent.indexOf("Sure")<0){this.textContent="Sure? · متأكدة؟";return}S.cls.splice(S.cur,1);S.cur=0;save();tabs();draw();$("cfg").classList.remove("on")};
+icon();tabs();draw();
+</script>
+</body>
+</html>
